@@ -48,17 +48,17 @@ pip install -r requirements.txt
 
 ```
 SimpleQuant
-├── data/                    # Data files
-│   ├── sample_data.csv      # We provided a sample dataset
+├── data/                    # 数据文件
+│   ├── sample_data.csv      # 我们提供了一个示例数据文件
 │   └── ...
-├── docs/                    # Documentation files
+├── docs/                    # 项目文档文件
 │   └── ...
-├── simplequant/             # Core folder with multiple sub-packages and modules 
+├── simplequant/             # 核心源码文件夹，包含数个子模块和子包 
 │   ├── factor/
 │   ├── plot/
 │   ├── func.py
 │   └── ...
-└── tests/                   # Testing files
+└── tests/                   # 测试文件
     └── ...
 
 ```
