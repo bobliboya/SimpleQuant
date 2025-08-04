@@ -29,5 +29,6 @@ jobs:
       run: pip list
 
     - name: Run tests
+      working-directory: ./tests
       run: |
-        pytest --rich ./tests
+        pytest --rich
