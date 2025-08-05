@@ -31,4 +31,4 @@ jobs:
     - name: Run tests
       working-directory: ./tests
       run: |
-        pytest --rich
+        pytest

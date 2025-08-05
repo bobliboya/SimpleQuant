@@ -34,10 +34,16 @@ def evaluate_regression_model(
     Notes:
         **Intercept Warning**: Ensure intercept is handled correctly. This function does not add intercept implicitly.
     """
-    assert x.shape[1] == beta.shape[-1], (
-        f"Mismatch in dimensions: x.shape = {x.shape}, beta.shape = {beta.shape}. "
-        "Make sure x includes intercept column if beta includes intercept term."
-    )
+
+    if not (x.shape[1] == beta.shape[-1]):
+        raise ValueError(
+            f"Invalid input Shape: beta and x must have the same number of features."
+        )
+
+    if not (x.shape[0] == y_true.shape[-1]):
+        raise ValueError(
+            f"Invalid input Shape: y_true and x must have the same number of samples."
+        )
 
     y_pred = x @ beta.T
     mse = mean_squared_error(y_true, y_pred)

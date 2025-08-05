@@ -8,6 +8,6 @@ Write-Output "Running code formatter (ruff)..."
 ruff format .
 
 Write-Output "Running tests (pytest)..."
-pytest --rich ./tests
+pytest ./tests
 
 Write-Output "All tasks completed successfully."

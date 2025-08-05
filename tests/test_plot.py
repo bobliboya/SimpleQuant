@@ -5,9 +5,7 @@ import numpy as np
 from simplequant import plot_factor_matrix, plot_model_comparison
 
 
-# ------------------------
 # plot_factor_matrix tests
-# ------------------------
 
 
 def test_invalid_matrix_type():
@@ -30,9 +28,7 @@ def test_index_column_mismatch():
         plot_factor_matrix(matrix, "cov", "2025-08-01")
 
 
-# ----------------------------
 # plot_model_comparison tests
-# ----------------------------
 
 
 def test_invalid_metric_name():
