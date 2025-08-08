@@ -42,3 +42,23 @@ def test_evaluate_regression_model_correct():
     assert res["RMSE"] == pytest.approx(0.7629, abs=1e-4)
     assert res["MAE"] == pytest.approx(0.5800, abs=1e-4)
     assert res["R2"] == pytest.approx(0.6531, abs=1e-4)
+
+
+def test_regress_model_error_1():
+    y_true = np.array([[1, 2, 3, 4, 5]])
+    x = np.eye(5)
+    with pytest.raises(
+        ValueError,
+        match=f"Invalid input Shape: y_true must be 1D array."
+    ):
+        regress_model(y_true, x)
+
+
+def test_regress_model_error_2():
+    y_true = np.array([1, 2, 3, 4, 5])
+    x = np.eye(4)
+    with pytest.raises(
+        ValueError,
+        match=f"Invalid input Shape: y_true and x must have the same number of samples."
+    ):
+        regress_model(y_true, x)

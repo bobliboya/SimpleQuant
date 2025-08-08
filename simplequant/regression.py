@@ -81,6 +81,17 @@ def regress_model(
     Notes:
         **Intercept Warning**: If `fit_intercept=True`, x will be augmented internally.
     """
+
+    if not y_true.ndim == 1:
+        raise ValueError(
+            f"Invalid input Shape: y_true must be 1D array."
+        )
+
+    if not y_true.shape[-1] == x.shape[0]:
+        raise ValueError(
+            f"Invalid input Shape: y_true and x must have the same number of samples."
+        )
+
     model = LinearRegression(fit_intercept=fit_intercept)
     model.fit(x, y_true)
     A = model.coef_
