@@ -8,41 +8,46 @@ def evaluate_regression_model(
     y_true: np.ndarray, beta: np.ndarray, x: np.ndarray, plot: bool = False
 ) -> dict[str, float]:
     """
-    Evaluate a linear regression model's performance given coefficients and features.
+    Evaluate a linear regression model's performance.
 
-    This computes key error metrics between predicted and actual values.
-    Ensure that the shape of `x` matches `beta`, especially regarding intercept terms.
+    This function computes common regression metrics (MSE, RMSE, MAE, R²) between
+    predicted and actual target values, given regression coefficients and a feature
+    matrix. The feature matrix must match the number of coefficients in `beta` and must
+    already include an intercept column if the model includes an intercept.
 
     Args:
-        y_true (np.ndarray): True target values, shape (n_samples,).
-        beta (np.ndarray): Regression coefficients, shape (n_features,) or (1, n_features).
-        x (np.ndarray): Feature matrix, shape (n_samples, n_features).
-            If beta includes an intercept term, x should already be augmented with a column of ones.
-        plot (bool): Whether to display a diagnostic plot. (Currently unimplemented)
+        y_true (np.ndarray): True target (response) values of shape (n_samples,).
+        beta (np.ndarray): Regression coefficients of shape (n_features,) or
+            (1, n_features). If including an intercept term, it should correspond
+            to the first column of `x`.
+        x (np.ndarray): Feature (predictor) matrix of shape (n_samples, n_features).
+            Must be augmented with a column of ones if an intercept is used.
+        plot (bool, optional): Whether to display a diagnostic plot.
+            Currently unimplemented. Defaults to False.
 
     Returns:
-        dict[str, float]: Dictionary containing:
-
-            - "MSE": Mean Squared Error
-            - "RMSE": Root Mean Squared Error
-            - "MAE": Mean Absolute Error
-            - "R2": R-squared score
+        dict[str, float]: A dictionary containing:
+            - `"MSE"` (float): Mean Squared Error.
+            - `"RMSE"` (float): Root Mean Squared Error.
+            - `"MAE"` (float): Mean Absolute Error.
+            - `"R2"` (float): Coefficient of determination.
 
     Raises:
-        AssertionError: If x.shape[1] != beta.shape[-1]
+        ValueError: If the number of **features** in `x` does not match the length of `beta`.
+        ValueError: If the number of **samples** in `x` does not match the number of samples in `y_true`.
 
     Notes:
-        **Intercept Warning**: Ensure intercept is handled correctly. This function does not add intercept implicitly.
+        This function does **NOT** add an intercept term automatically. Ensure that the input `x` is prepared correctly before calling this function.
     """
 
     if not (x.shape[1] == beta.shape[-1]):
         raise ValueError(
-            f"Invalid input Shape: beta and x must have the same number of features."
+            f"beta and x must have the same number of features; got beta.shape={beta.shape}, x.shape={x.shape}"
         )
 
     if not (x.shape[0] == y_true.shape[-1]):
         raise ValueError(
-            f"Invalid input Shape: y_true and x must have the same number of samples."
+            f"y_true and x must have the same number of samples; got y_true.shape={y_true.shape}, x.shape={x.shape}"
         )
 
     y_pred = x @ beta.T
@@ -82,19 +87,25 @@ def regress_model(
         **Intercept Warning**: If `fit_intercept=True`, x will be augmented internally.
     """
 
-    if not y_true.ndim == 1:
+    if y_true.ndim != 1:
         raise ValueError(
-            f"Invalid input Shape: y_true must be 1D array."
+            f"y_true must be 1-D; got ndim={y_true.ndim}, shape={y_true.shape}."
         )
 
-    if not y_true.shape[-1] == x.shape[0]:
+    if x.ndim != 2:
         raise ValueError(
-            f"Invalid input Shape: y_true and x must have the same number of samples."
+            f"x must be 2-D (n_samples, n_features); got ndim={x.ndim}, shape={x.shape}."
+        )
+
+    if y_true.shape[0] != x.shape[0]:
+        raise ValueError(
+            f"y_true and x must have the same number of samples; "
+            f"got len(y_true)={y_true.shape[0]} vs x.shape[0]={x.shape[0]}."
         )
 
     model = LinearRegression(fit_intercept=fit_intercept)
     model.fit(x, y_true)
-    A = model.coef_
+    A = np.array(model.coef_, dtype=float)
     c = model.intercept_ if fit_intercept else 0.0
 
     if fit_intercept:
@@ -132,8 +143,6 @@ def compute_correlation_from_covariance(df_cov: pd.DataFrame) -> pd.DataFrame:
         - Zero variance entries (σ²=0) lead to correlation = 0 unless dropped.
         - Diagonal values are forcibly set to 1.0 for stability.
     """
-    if not isinstance(df_cov, pd.DataFrame):
-        raise TypeError("Input must be a pandas DataFrame.")
 
     if not df_cov.index.equals(df_cov.columns):
         print(df_cov)
