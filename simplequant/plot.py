@@ -10,30 +10,6 @@ MARKERS = ["o"]
 COLORS = plt.get_cmap("Set1").colors
 
 
-# Plot stock prices over time
-def plot_stock_price(df):
-    df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
-    df = df.dropna(subset=["Date"])
-
-    # Step 3: Pivot the data to wide format (Date as index, each Symbol as column)
-    pivot_df = df.pivot(index="Date", columns="Symbol", values="ClosePrice")
-
-    # Step 4: Plot the daily close prices
-    plt.figure(figsize=(14, 7))
-
-    for col in pivot_df.columns:
-        plt.plot(pivot_df.index, pivot_df[col], label=str(col))
-
-    plt.title("Daily Close Prices of Each Stock")
-    plt.xlabel("Date")
-    plt.ylabel("Close Price")
-    plt.legend(title="Symbol", bbox_to_anchor=(1.05, 1), loc="upper left")
-    plt.grid(True)
-    plt.ylim(ymin=0)
-    plt.tight_layout()
-    plt.show()
-
-
 def plot_factor_matrix(
     matrix: pd.DataFrame,
     matrix_type: Literal["cov", "corr"],
@@ -163,7 +139,7 @@ def plot_model_comparison(
             marker = MARKERS[i % len(MARKERS)]
 
             mean_val = y_vals.mean()
-            # 原始散点
+            # Original Scatterplot
             plt.scatter(
                 df.index,
                 y_vals,
@@ -173,7 +149,7 @@ def plot_model_comparison(
                 color=color,
             )
 
-            # ➕ 平均值虚线
+            # Adding Average Horizontal Line
             plt.axhline(
                 y=mean_val, linestyle="--", linewidth=2.0, color=color, label=None
             )
@@ -188,7 +164,7 @@ def plot_model_comparison(
     )
     plt.axhline(0, color="black", linewidth=1.2, linestyle="-")
 
-    # 自动设置 Y 轴范围
+    # Set Y-Axis Range Automatically
     if metric == "r2":
         min_y = max(np.floor(df.min().min() * 10) / 10, -0.2)
         plt.ylim(min_y, 1 + 0.05)
@@ -208,6 +184,7 @@ def plot_model_comparison(
         plt.savefig(save_path, dpi=GLOBAL_DPI, bbox_inches="tight")
 
     plt.show()
+    plt.close()
 
 
-__all__ = ["plot_stock_price", "plot_factor_matrix", "plot_model_comparison"]
+__all__ = ["plot_factor_matrix", "plot_model_comparison"]

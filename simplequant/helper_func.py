@@ -8,12 +8,13 @@ pd.options.display.float_format = "{:.2f}".format
 def ddb_alpha_matrix_to_df(alpha_matrix: Any) -> pd.DataFrame:
     """
     Takes the return result of Alpha Calculations from DolphinDB gtjaAlpha191 Module.
+    For usage of the gtjaAlpha191 module, please refer to: https://docs.dolphindb.cn/zh/modules/gtja191Alpha/191alpha.html
 
     Args:
-        alpha_matrix (List [Any]): The return result from DolphinDB.
+        alpha_matrix (List [Any]): The return result from DolphinDB gtjaAlpha191 Module (Using Python Connector).
 
     Returns:
-        The Pandas Dataframe of the dataset.
+        The Pandas Dataframe of the same dataset.
     """
     values, dates, tickers = alpha_matrix
     df = pd.DataFrame(values, index=pd.to_datetime(dates), columns=tickers)
@@ -44,10 +45,10 @@ def calculate_daily_return(df: pd.DataFrame) -> pd.DataFrame:
     if "ClosePrice" not in df.columns:
         raise ValueError("Missing 'ClosePrice' column in input")
 
-    # 计算收益率（不修改原始 df）
+    # Calculate the return rate without change the original DataFrame
     rtn = df.groupby(level="Symbol")["ClosePrice"].pct_change()
 
-    # 返回新构造的 DataFrame，保留原索引
+    # Return the new DataFrame with the original indexing
     return pd.DataFrame({"ClosePrice": df["ClosePrice"], "Return": rtn}, index=df.index)
 
 
@@ -66,8 +67,6 @@ def get_single_day_info(df: pd.DataFrame, date: str) -> pd.DataFrame:
 
     if "Date" in df.columns:
         return df[df["Date"] == date]
-    elif "TRADE_DATE" in df.columns:
-        return df[df["TRADE_DATE"] == date]
     else:
         raise ValueError("No valid date column in DataFrame!")
 

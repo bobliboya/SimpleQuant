@@ -5,6 +5,7 @@ from scipy.stats import rankdata as _rankdata
 
 # Alpha001 to Alpha012: each function assumes sub_df is already filtered by symbol and date window
 
+
 def alpha_001(sub_df: _pd.DataFrame) -> float:
     """
     Compute the Alpha 001 factor using the formula published by Guotai Junan Securities.
@@ -102,10 +103,10 @@ def alpha_006(sub_df: _pd.DataFrame) -> float:
     if len(sub_df) < 10:
         return _np.nan
     return (
-            -1
-            * _np.corrcoef(
-        sub_df["OpenPrice"].to_numpy()[-10:], sub_df["Volume"].to_numpy()[-10:]
-    )[0, 1]
+        -1
+        * _np.corrcoef(
+            sub_df["OpenPrice"].to_numpy()[-10:], sub_df["Volume"].to_numpy()[-10:]
+        )[0, 1]
     )
 
 
@@ -123,10 +124,10 @@ def alpha_008(sub_df: _pd.DataFrame) -> float:
     if len(sub_df) < 10:
         return _np.nan
     return (
-            -1
-            * _np.corrcoef(
-        sub_df["OpenPrice"].to_numpy()[-10:], sub_df["Volume"].to_numpy()[-10:]
-    )[0, 1]
+        -1
+        * _np.corrcoef(
+            sub_df["OpenPrice"].to_numpy()[-10:], sub_df["Volume"].to_numpy()[-10:]
+        )[0, 1]
     )
 
 
@@ -156,5 +157,3 @@ def alpha_012(sub_df: _pd.DataFrame) -> float:
         return _np.nan
     volume = sub_df["Volume"].to_numpy()[-7:]
     return _rankdata(volume)[-1] / 7.0
-
-

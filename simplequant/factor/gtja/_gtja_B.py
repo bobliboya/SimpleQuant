@@ -2,6 +2,7 @@ import pandas as _pd
 import numpy as _np
 from scipy.stats import rankdata as _rankdata
 
+
 def alpha_013(sub_df: _pd.DataFrame) -> float:
     if len(sub_df) < 12:
         return _np.nan

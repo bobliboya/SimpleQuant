@@ -7,6 +7,7 @@ __pycache__/
 *.so
 
 data/local/*
+output/*
 
 # Distribution / packaging
 .Python
@@ -187,6 +188,9 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+.vscode/*
+.vscode
 
 # Cursor
 #  Cursor is an AI-powered code editor. `.cursorignore` specifies files/directories to
