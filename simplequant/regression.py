@@ -27,10 +27,10 @@ def evaluate_regression_model(
 
     Returns:
         dict[str, float]: A dictionary containing:
-            - `"MSE"` (float): Mean Squared Error.
-            - `"RMSE"` (float): Root Mean Squared Error.
-            - `"MAE"` (float): Mean Absolute Error.
-            - `"R2"` (float): Coefficient of determination.
+            - `MSE` (float): Mean Squared Error.
+            - `RMSE` (float): Root Mean Squared Error.
+            - `MAE` (float): Mean Absolute Error.
+            - `R2` (float): Coefficient of determination.
 
     Raises:
         ValueError: If the number of **features** in `x` does not match the length of `beta`.
@@ -49,6 +49,9 @@ def evaluate_regression_model(
         raise ValueError(
             f"y_true and x must have the same number of samples; got y_true.shape={y_true.shape}, x.shape={x.shape}"
         )
+
+    beta = beta.squeeze()  # Ensure beta is 1-D
+    y_true = y_true.squeeze()  # Ensure y_true is 1-D
 
     y_pred = x @ beta.T
     mse = mean_squared_error(y_true, y_pred)
@@ -70,10 +73,13 @@ def regress_model(
     """
     Fit a linear regression model and return coefficients, intercept, residuals, and metrics.
 
+    Notes:
+        **Intercept Warning**: If `fit_intercept=True`, x will be augmented internally.
+        
     Args:
         y_true (np.ndarray): Target values, shape (n_samples,).
         x (np.ndarray): Feature matrix, shape (n_samples, n_features).
-        fit_intercept (bool): Whether to include an intercept term.
+        fit_intercept (bool): Whether to include an intercept term. Default False.
 
     Returns:
         dict[str, float | np.ndarray]: Dictionary containing:
@@ -83,8 +89,6 @@ def regress_model(
             - "residual": Vector of residuals (y_true - y_pred)
             - "MSE", "RMSE", "MAE", "R2": Standard regression metrics. See documentation for `evaluate_regression_model`.
 
-    Notes:
-        **Intercept Warning**: If `fit_intercept=True`, x will be augmented internally.
     """
 
     if y_true.ndim != 1:
@@ -161,7 +165,8 @@ def compute_correlation_from_covariance(df_cov: pd.DataFrame) -> pd.DataFrame:
         corr_values = df_cov.values / denominator
 
     # Construct DataFrame
-    corr = pd.DataFrame(corr_values, index=df_cov.index, columns=df_cov.columns)
+    corr = pd.DataFrame(corr_values, index=df_cov.index,
+                        columns=df_cov.columns)
 
     # Fill undefined values with 0, then set diagonal to 1
     corr = corr.fillna(0.0)
